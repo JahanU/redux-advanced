@@ -9,9 +9,8 @@ const uiSlice = createSlice({
         toggleCart: (state) => {
             state.cartIsVisible = !state.cartIsVisible;
         }
-
     },
 });
 
-export const uictions = uiSlice.actions;
-export default uiSlice.reducer;
+export const uiActions = uiSlice.actions;
+export default uiSlice;
