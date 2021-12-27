@@ -1,40 +1,43 @@
 import { uiActions } from './ui-slice';
 import { cartActions } from './cart-slice';
 
-export const fetchCartData = () => {
-  return async (dispatch) => {
-    const fetchData = async () => {
-      const response = await fetch(
-        'https://react-http-6b4a6.firebaseio.com/cart.json'
-      );
+// Redux automatically detects the action type and payload type, thus giving us the 
+// dispatch function and the action type.
+export const fetchCartData = () => async dispatch => {
+  // return async (dispatch, getState) => {
+  // console.log('disapatch: ', dispatch);
+  // console.log('state: ', getState());
 
-      if (!response.ok) {
-        throw new Error('Could not fetch cart data!');
-      }
+  const fetchData = async () => {
+    const response = await fetch(process.env.REACT_APP_FIREBASE);
 
-      const data = await response.json();
-
-      return data;
-    };
-
-    try {
-      const cartData = await fetchData();
-      dispatch(
-        cartActions.replaceCart({
-          items: cartData.items || [],
-          totalQuantity: cartData.totalQuantity,
-        })
-      );
-    } catch (error) {
-      dispatch(
-        uiActions.showNotification({
-          status: 'error',
-          title: 'Error!',
-          message: 'Fetching cart data failed!',
-        })
-      );
+    if (!response.ok) {
+      throw new Error('Could not fetch cart data!');
     }
+
+    const data = await response.json();
+
+    return data;
   };
+
+  try {
+    const cartData = await fetchData();
+    dispatch(
+      cartActions.replaceCart({
+        items: cartData.items || [],
+        totalQuantity: cartData.totalQuantity,
+      })
+    );
+  } catch (error) {
+    dispatch(
+      uiActions.showNotification({
+        status: 'error',
+        title: 'Error!',
+        message: 'Fetching cart data failed!',
+      })
+    );
+  }
+  // };
 };
 
 export const sendCartData = (cart) => {
@@ -48,8 +51,7 @@ export const sendCartData = (cart) => {
     );
 
     const sendRequest = async () => {
-      const response = await fetch(
-        'https://react-http-6b4a6.firebaseio.com/cart.json',
+      const response = await fetch(process.env.REACT_APP_FIREBASE,
         {
           method: 'PUT',
           body: JSON.stringify({

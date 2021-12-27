@@ -6,7 +6,7 @@ import Layout from './components/Layout/Layout';
 import Products from './components/Shop/Products';
 import Notification from './components/UI/Notification';
 import { sendCartData, fetchCartData } from './store/cart-actions';
-
+require('dotenv').config();
 let isInitial = true;
 
 function App() {
